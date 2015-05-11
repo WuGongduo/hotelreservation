@@ -19,7 +19,7 @@ public class HotelComparator implements Comparator<IHotel> {
 		int customerCost2 = customer.calculateCustomerCostByDays(o2);
 
 		if (customerCost1 != customerCost2) {
-			return customerCost1 - customerCost2; // descending order
+			return customerCost1 - customerCost2;
 		} else {
 			return o2.getRating() - o1.getRating();
 		}

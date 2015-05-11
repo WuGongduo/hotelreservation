@@ -1,29 +1,28 @@
 package com.tw.case1.hotel;
 
+import com.tw.case1.commons.Common;
+import com.tw.case1.customer.ICustomer;
+import com.tw.case1.customer.impl.CustomerImpl;
+
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import com.tw.case1.commons.Common;
-import com.tw.case1.customer.ICustomer;
-import com.tw.case1.customer.impl.CustomerImpl;
-import com.tw.case1.strategy.StrategyFactory;
-
 public class HotelChain{
 
-	private List<IHotel> hotels;
+	private List<IHotel> hotels = new ArrayList<IHotel>();
 
-	public IHotel findCheapestHotel(String line){
+	public IHotel findCheapestHotel(List<IHotel> hotels,String line){
+		this.hotels = hotels;
 		ICustomer customer = createCustomer(getCustomerTag(line),getDateArray(line));
 		sortHotelByCost(customer);
 		return hotels.get(0);
 	}
 
 	private void sortHotelByCost(ICustomer customer){
-		HotelComparator hotelComparator = new HotelComparator(customer);
-		Collections.sort(hotels , hotelComparator);
+		Collections.sort(hotels , new HotelComparator(customer));
 		if(!hotels.isEmpty()){
 			System.out.println(hotels.get(0).getName());
 		}
@@ -60,13 +59,7 @@ public class HotelChain{
 	}
 
 	private ICustomer createCustomer(String customerTag, List<Date> days){
-		ICustomer customer = new CustomerImpl(customerTag);
-		customer.setStayDays(days);
+		ICustomer customer = new CustomerImpl(customerTag,days);
 		return customer;
 	}
-
-	public void setHotels(List<IHotel> hotels) {
-		this.hotels = hotels;
-	}
-	
 }

@@ -5,6 +5,7 @@ import com.tw.case1.hotel.IHotel;
 import com.tw.case1.strategy.IStrategy;
 import com.tw.case1.strategy.StrategyFactory;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -12,18 +13,13 @@ public class CustomerImpl implements ICustomer {
 
 	private String customerType;
 
-	private List<Date> stayDays;
+	private List<Date> stayDays = new ArrayList<Date>();
 
 	private int sumRate;
 
-	private IHotel hotel;
-
-
-	public CustomerImpl() {
-	}
-
-	public CustomerImpl(String customerType) {
+	public CustomerImpl(String customerType, List<Date> stayDays) {
 		this.customerType = customerType;
+		this.stayDays = stayDays;
 	}
 
 	@Override
@@ -32,42 +28,17 @@ public class CustomerImpl implements ICustomer {
 	}
 
 	@Override
-	public void setCustomerType(String type) {
-		this.customerType = type;
-	}
-
-	public List<Date> getStayDays() {
-		return stayDays;
-	}
-
-	public void setStayDays(List<Date> stayDays) {
-		this.stayDays = stayDays;
-	}
-
-	public IHotel getHotel() {
-		return hotel;
-	}
-
-	public void setHotel(IHotel hotel) {
-		this.hotel = hotel;
-	}
-
-	public int getSumRate() {
-		return sumRate;
-	}
-
-	public void addSumRate(Date stayDay, IHotel hotel){
-		IStrategy chargeStrategy = StrategyFactory.getStrategy(stayDay,this);
-		this.sumRate += chargeStrategy.getRate(hotel);
-	}
-
-	@Override
 	public int calculateCustomerCostByDays(IHotel hotel){
 		sumRate = 0;
 		for(Date stayDay : stayDays){
-			addSumRate(stayDay, hotel);
+			sumRate = sumRate + getCostByDay(stayDay, hotel);
 		}
 		return sumRate;
+	}
+
+	private int getCostByDay(Date stayDay, IHotel hotel){
+		IStrategy chargeStrategy = StrategyFactory.getStrategy(stayDay,this);
+		return chargeStrategy.getRate(hotel);
 	}
 
 }
